@@ -1,0 +1,64 @@
+service: uniprof-process-log 
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  stage: dev
+  region: us-east-2
+  environment:
+    DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+
+functions:
+  logCreate:
+    handler: handler.logCreate
+    events: # The "Events" that trigger this function
+      - http: 
+          path: process-logs
+          method: POST
+  logDelete:
+    handler: handler.logDelete
+    events:
+      - http: 
+          path: process-logs 
+          method: DELETE
+  logList:
+    handler: handler.logList
+    events:
+      - http: 
+          path: process-logs 
+          method: GET
+  logDetails:
+    handler: handler.logDetails
+    events:
+      - http: 
+          path: process-logs/{id}
+          method: GET
+
+resources:
+  Resources:
+    TodosDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: id
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}

@@ -1,0 +1,11 @@
+{
+  "name": "uniprof-process-log",
+  "version": "1.0.0",
+  "description": "Create log for folder scan",
+  "author": "diego.perez.nadler@gmail.com",
+  "main": "handler.js",
+  "dependencies": {
+    "uuid": "^3.3.2"
+  },
+  "license": "ISC"
+}

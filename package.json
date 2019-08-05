@@ -5,6 +5,7 @@
   "author": "diego.perez.nadler@gmail.com",
   "main": "handler.js",
   "dependencies": {
+    "aws-sdk": "^2.504.0",
     "uuid": "^3.3.2"
   },
   "license": "ISC"
